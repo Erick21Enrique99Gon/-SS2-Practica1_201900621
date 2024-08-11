@@ -1,0 +1,28 @@
+DECLARE @firstName NVARCHAR(50) = 'Zelig';
+        DECLARE @lastName NVARCHAR(50) = 'Rothermel';
+        DECLARE @Age INT = 81;
+        DECLARE @TTT NVARCHAR(7) = 'Male';
+        DECLARE @Nationality NVARCHAR(50) = 'Poland';
+        
+        DECLARE @PassengerID INT = (
+            SELECT PassengerID
+            FROM Passenger
+            WHERE FirstName = @firstName AND LastName = @lastName AND Age = @Age AND G = @TTT AND Nationality = @Nationality
+        )
+
+        IF EXISTS (
+            SELECT 1
+            FROM FlightDetails
+            WHERE PassengerID = @PassengerID
+        )
+        BEGIN
+            PRINT 'El valor existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor existe
+        END
+        ELSE
+        BEGIN
+            PRINT 'El valor no existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor no existe
+            
+            INSERT INTO FlightDetails (PassengerID) VALUES (@PassengerID);
+        END
