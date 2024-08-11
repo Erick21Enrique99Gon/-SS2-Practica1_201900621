@@ -61,43 +61,38 @@ class Cargar:
         cursor.execute(sql)
         conn.commit()
 
-        # sql = '''DECLARE @firstFind NVARCHAR(50) = '{}';
-        # DECLARE @lastFind NVARCHAR(50) = '{}';
-        # DECLARE @AgeFind INT = {};
-        # DECLARE @DepartureDateFind Date = '{}';
+        sql = '''
+        DECLARE @AirportCountryCode NVARCHAR(5) = '{}';
+        DECLARE @CountryName NVARCHAR(50) = '{}';
+        DECLARE @AirportContinent NVARCHAR(5) = '{}';
+        DECLARE @Continent NVARCHAR(50) = '{}';
+        DECLARE @AirportName NVARCHAR(50) = '{}';
         
-        # DECLARE @GenderId INT = (SELECT GenderID
-        # FROM Gender
-        # WHERE Gender = '{}');
+        IF EXISTS (
+            SELECT 1
+            FROM Airport
+            WHERE AirportCountryCode = @AirportCountryCode
+            AND CountryName = @CountryName
+            AND AirportContinent = @AirportContinent
+            AND Continent = @Continent
+            AND AirportName = @AirportName
+        )
         
-        # DECLARE @NationalityID INT = (SELECT NationalityID
-        # FROM Nationality
-        # WHERE Nationality = '{}');
-        
-        # DECLARE @PassengerID INT = (SELECT PassengerID
-        # FROM Passenger
-        # WHERE FirstName = @firstFind AND LastName = @lastFind AND Age = @AgeFind AND GenderId = @GenderId AND NationalityID = @NationalityID);
-        
-        # IF EXISTS (
-        #     SELECT 1
-        #     FROM Flight
-        #     WHERE DepartureDate = @DepartureDateFind AND PassengerID = @PassengerID
-        # )
-        
-        # BEGIN
-        #     PRINT 'El valor existe en la columna.';
-        #     -- Aquí puedes realizar otras acciones si el valor existe
-        # END
-        # ELSE
-        # BEGIN
-        #     PRINT 'El valor no existe en la columna.';
-        #     -- Aquí puedes realizar otras acciones si el valor no existe
+        BEGIN
+            PRINT 'El valor existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor existe
+        END
+        ELSE
+        BEGIN
+            PRINT 'El valor no existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor no existe
             
-        #     INSERT INTO Flight (DepartureDate,PassengerID) VALUES (@DepartureDateFind,@PassengerID);
-        # END'''.format(dato['First Name'].replace("'", "''"),dato['Last Name'].replace("'", "''"),dato['Age'],dato['Departure Date'],dato['Gender'],dato['Nationality']) #First Name,Last Name,Age
-        # print(sql)
-        # cursor.execute(sql)
-        # conn.commit() 
+            INSERT INTO Airport (AirportCountryCode, CountryName, AirportContinent, Continent,AirportName)
+            VALUES (@AirportCountryCode, @CountryName, @AirportContinent, @Continent,@AirportName);
+        END'''.format(dato['Airport Country Code'],dato['Country Name'].replace("'", "''"),dato['Airport Continent'],dato['Continents'].replace("'", "''"),dato['Airport Name'].replace("'", "''")) 
+        print(sql)
+        cursor.execute(sql)
+        conn.commit()
 
         sql = '''
         DECLARE @firstName NVARCHAR(50) = '{}';
@@ -109,6 +104,11 @@ class Cargar:
         DECLARE @ArrivalAirport NVARCHAR(50) = '{}';
         DECLARE @PilotName NVARCHAR(50) = '{}';
         DECLARE @FlightStatus NVARCHAR(15) = '{}';
+        DECLARE @AirportCountryCode NVARCHAR(5) = '{}';
+        DECLARE @CountryName NVARCHAR(50) = '{}';
+        DECLARE @AirportContinent NVARCHAR(5) = '{}';
+        DECLARE @Continent NVARCHAR(50) = '{}';
+        DECLARE @AirportName NVARCHAR(50) = '{}';
         
         DECLARE @PassengerID INT = (
             SELECT PassengerID
@@ -126,6 +126,16 @@ class Cargar:
             AND FlightStatus = @FlightStatus
         )
 
+        
+        DECLARE @AirportID INT = (
+            SELECT AirportID
+            FROM Airport
+            WHERE AirportCountryCode = @AirportCountryCode
+            AND CountryName = @CountryName
+            AND AirportContinent = @AirportContinent
+            AND Continent = @Continent
+            AND AirportName = @AirportName
+        )
         IF EXISTS (
             SELECT 1
             FROM FlightDetails
@@ -140,23 +150,10 @@ class Cargar:
             PRINT 'El valor no existe en la columna.';
             -- Aquí puedes realizar otras acciones si el valor no existe
             
-            INSERT INTO FlightDetails (PassengerID,FlightID) VALUES (@PassengerID,@FlightID);
+            INSERT INTO FlightDetails (PassengerID,FlightID, AirportID) VALUES (@PassengerID,@FlightID,@AirportID);
         END'''.format(dato['First Name'].replace("'", "''"),dato['Last Name'].replace("'", "''"),dato['Age'],dato['Gender'],dato['Nationality'],
-                    dato['Departure Date'],dato['Arrival Airport'].replace("'", "''"),dato['Pilot Name'].replace("'", "''"),dato['Flight Status']) 
+                    dato['Departure Date'],dato['Arrival Airport'].replace("'", "''"),dato['Pilot Name'].replace("'", "''"),dato['Flight Status'],
+                    dato['Airport Country Code'],dato['Country Name'].replace("'", "''"),dato['Airport Continent'],dato['Continents'].replace("'", "''"),dato['Airport Name'].replace("'", "''")) 
         print(sql)
         cursor.execute(sql)
         conn.commit()
-
-        # # Obtener y mostrar el mensaje
-        # cursor.execute("SELECT @@ROWCOUNT")
-        # result = cursor.fetchall()
-        # for row in result:
-        #     print("Filas afectadas: ", row[0])
-        
-        # SQL_QUERY = 'SELECT * FROM Gender'
-        # cursor.execute(SQL_QUERY)
-        # result = cursor.fetchall()
-        # for row in result:
-        #     print(row)
-        
-        # SQL_QUERY = '''INSERT INTO Gender (Gender) VALUES (?);'''

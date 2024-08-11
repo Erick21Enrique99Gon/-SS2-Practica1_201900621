@@ -61,6 +61,11 @@ class MenuInicial:
                 cargar.cargar_datos(conn=conn, cursor=cursor, dato=fila)
         
         
+        SQL_QUERY = 'SELECT * FROM Airport'
+        cursor.execute(SQL_QUERY)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
 
         SQL_QUERY = 'SELECT * FROM Flight'
         cursor.execute(SQL_QUERY)

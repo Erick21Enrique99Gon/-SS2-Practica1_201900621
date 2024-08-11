@@ -23,12 +23,23 @@ class ModeloBase:
             FlightStatus NVARCHAR(15)
         )
         
+        CREATE TABLE Airport (
+            AirportID INT IDENTITY(1,1) PRIMARY KEY,
+            AirportCountryCode NVARCHAR(5),
+            CountryName NVARCHAR(50),
+            AirportContinent NVARCHAR(5),
+            Continent NVARCHAR(50),
+            AirportName NVARCHAR(50)
+        )
+        
         CREATE TABLE FlightDetails (
             FlightDetailsID INT IDENTITY(1,1) PRIMARY KEY,
             PassengerID INT,
             FlightID INT,
+            AirportID INT,
             FOREIGN KEY (PassengerID) REFERENCES Passenger(PassengerID),
-            FOREIGN KEY (FlightID) REFERENCES Flight(FlightID)
+            FOREIGN KEY (FlightID) REFERENCES Flight(FlightID),
+            FOREIGN KEY (AirportID) REFERENCES Airport(AirportID)
         )
         '''
         cursor.execute(sql)
