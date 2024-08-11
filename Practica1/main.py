@@ -62,6 +62,18 @@ class MenuInicial:
         
         
 
+        SQL_QUERY = 'SELECT * FROM Flight'
+        cursor.execute(SQL_QUERY)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
+        SQL_QUERY = 'SELECT * FROM FlightDetails'
+        cursor.execute(SQL_QUERY)
+        result = cursor.fetchall()
+        for row in result:
+            print(row)
+
         SQL_QUERY = 'SELECT * FROM Passenger'
         cursor.execute(SQL_QUERY)
         result = cursor.fetchall()

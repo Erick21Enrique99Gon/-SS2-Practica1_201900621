@@ -13,7 +13,7 @@ class Cargar:
         IF EXISTS (
             SELECT 1
             FROM Passenger
-            WHERE FirstName = @firstName AND LastName = @lastName AND Age = @Age AND G = @Gender AND Nationality = @Nationality
+            WHERE FirstName = @firstName AND LastName = @lastName AND Age = @Age AND Gender = @Gender AND Nationality = @Nationality
         )
         
         BEGIN
@@ -25,8 +25,38 @@ class Cargar:
             PRINT 'El valor no existe en la columna.';
             -- Aquí puedes realizar otras acciones si el valor no existe
             
-            INSERT INTO Passenger (FirstName, LastName, Age, G,Nationality) VALUES (@firstName, @lastName,@Age, @Gender,@Nationality);
+            INSERT INTO Passenger (FirstName, LastName, Age, Gender,Nationality) VALUES (@firstName, @lastName,@Age, @Gender,@Nationality);
         END'''.format(dato['First Name'].replace("'", "''"),dato['Last Name'].replace("'", "''"),dato['Age'],dato['Gender'],dato['Nationality']) #First Name,Last Name,Age
+        print(sql)
+        cursor.execute(sql)
+        conn.commit()
+
+        sql = '''
+        DECLARE @DepartureDate Date = '{}';
+        DECLARE @ArrivalAirport NVARCHAR(50) = '{}';
+        DECLARE @PilotName NVARCHAR(50) = '{}';
+        DECLARE @FlightStatus NVARCHAR(15) = '{}';
+        
+        IF EXISTS (
+            SELECT 1
+            FROM Flight
+            WHERE DepartureDate = @DepartureDate 
+            AND ArrivalAirport = @ArrivalAirport 
+            AND PilotName = @PilotName
+            AND FlightStatus = @FlightStatus
+        )
+        
+        BEGIN
+            PRINT 'El valor existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor existe
+        END
+        ELSE
+        BEGIN
+            PRINT 'El valor no existe en la columna.';
+            -- Aquí puedes realizar otras acciones si el valor no existe
+            
+            INSERT INTO Flight (DepartureDate, ArrivalAirport, PilotName, FlightStatus) VALUES (@DepartureDate, @ArrivalAirport, @PilotName , @FlightStatus);
+        END'''.format(dato['Departure Date'],dato['Arrival Airport'].replace("'", "''"),dato['Pilot Name'].replace("'", "''"),dato['Flight Status']) 
         print(sql)
         cursor.execute(sql)
         conn.commit()
@@ -73,13 +103,27 @@ class Cargar:
         DECLARE @firstName NVARCHAR(50) = '{}';
         DECLARE @lastName NVARCHAR(50) = '{}';
         DECLARE @Age INT = {};
-        DECLARE @TTT NVARCHAR(7) = '{}';
+        DECLARE @Gender NVARCHAR(7) = '{}';
         DECLARE @Nationality NVARCHAR(50) = '{}';
+        DECLARE @DepartureDate Date = '{}';
+        DECLARE @ArrivalAirport NVARCHAR(50) = '{}';
+        DECLARE @PilotName NVARCHAR(50) = '{}';
+        DECLARE @FlightStatus NVARCHAR(15) = '{}';
         
         DECLARE @PassengerID INT = (
             SELECT PassengerID
             FROM Passenger
-            WHERE FirstName = @firstName AND LastName = @lastName AND Age = @Age AND G = @TTT AND Nationality = @Nationality
+            WHERE FirstName = @firstName AND LastName = @lastName AND Age = @Age AND Gender = @Gender AND Nationality = @Nationality
+        )
+
+        
+        DECLARE @FlightID INT = (
+            SELECT FlightID
+            FROM Flight
+            WHERE DepartureDate = @DepartureDate 
+            AND ArrivalAirport = @ArrivalAirport 
+            AND PilotName = @PilotName
+            AND FlightStatus = @FlightStatus
         )
 
         IF EXISTS (
@@ -96,8 +140,9 @@ class Cargar:
             PRINT 'El valor no existe en la columna.';
             -- Aquí puedes realizar otras acciones si el valor no existe
             
-            INSERT INTO FlightDetails (PassengerID) VALUES (@PassengerID);
-        END'''.format(dato['First Name'].replace("'", "''"),dato['Last Name'].replace("'", "''"),dato['Age'],dato['Gender'],dato['Nationality']) #First Name,Last Name,Age
+            INSERT INTO FlightDetails (PassengerID,FlightID) VALUES (@PassengerID,@FlightID);
+        END'''.format(dato['First Name'].replace("'", "''"),dato['Last Name'].replace("'", "''"),dato['Age'],dato['Gender'],dato['Nationality'],
+                    dato['Departure Date'],dato['Arrival Airport'].replace("'", "''"),dato['Pilot Name'].replace("'", "''"),dato['Flight Status']) 
         print(sql)
         cursor.execute(sql)
         conn.commit()
